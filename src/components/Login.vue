@@ -110,15 +110,20 @@ export default {
 }
 
 .login_form {
+  //定位
   position: absolute;
   bottom: 0;
   width: 100%;
+  //上下是 0 左右是 20
   padding: 0 20px;
+  //
   box-sizing: border-box;
 }
 
 .btns {
+  //伸缩盒子
   display: flex;
+  // 尾部对齐
   justify-content: flex-end;
 }
 </style>
