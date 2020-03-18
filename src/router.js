@@ -6,6 +6,7 @@ import wlcome from './components/Wlcome.vue'
 import Users from './components/Users.vue'
 import roles from './components/roles.vue'
 import rights from './components/Rights.vue'
+import Cate from './components/goods/Cate.vue'
 Vue.use(Router)
     // 路由规则 
 const router = new Router({
@@ -20,7 +21,9 @@ const router = new Router({
                 { path: '/wlcome', component: wlcome },
                 { path: '/users', component: Users },
                 { path: '/roles', component: roles },
-                { path: '/rights', component: rights }
+                { path: '/rights', component: rights },
+                { path: '/categories', component: Cate }
+
             ]
         }
     ]
