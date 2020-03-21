@@ -363,13 +363,13 @@ export default {
             return this.$message.info('已取消删除')
         }
 
-        const {data:res}= await this.$http.delete('users/'+id)
+        const {data:res}= await this.$http.delete(`users/${id}`)
         console.log(res)
         if(res.meta.status !== 200){
            return this.$message.error('删除用户失败')
         }
         this.$message.success('删除用户成功')
-        this.getUserList
+        this.getUserList()
         },
         //分配角色弹框
         async setRole(userInfo){
