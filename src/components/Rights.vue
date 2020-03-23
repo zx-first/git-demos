@@ -5,7 +5,7 @@
   <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
   <el-breadcrumb-item>用户管理</el-breadcrumb-item>
   <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-  
+
 </el-breadcrumb>
 <!-- 卡片区域 -->
 <el-card >
@@ -21,36 +21,36 @@
                   <el-tag type="warning" v-else>三级</el-tag>
           </template>
       </el-table-column>
-     
+
           </el-table>
 </el-card>
 </div>
-   
+
 </template>
 
 <script>
 export default {
-    data(){
-        return{
-         //权限列表
-        rightsList:[]
-        }
-    },
-    created(){
-        //获取所有权限
-        this.getRightsList();
-    },
-    methods:{
-        //获取权限列表
-        async getRightsList(){
-            const {data: res}= await this.$http.get('rights/list')
-            if(res.meta.status !==200){
-               return this.$message.error('获取权限列表数据失败')
-            }
-            this.rightsList = res.data
-            console.log(this.rightsList)
-        }
+  data() {
+    return {
+      // 权限列表
+      rightsList: []
     }
+  },
+  created() {
+    // 获取所有权限
+    this.getRightsList()
+  },
+  methods: {
+    // 获取权限列表
+    async getRightsList() {
+      const { data: res } = await this.$http.get('rights/list')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取权限列表数据失败')
+      }
+      this.rightsList = res.data
+      console.log(this.rightsList)
+    }
+  }
 }
 </script>
 <style lang="less">

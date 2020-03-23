@@ -14,7 +14,7 @@
       <div class="toggle-button" @click="toggleCollapse">|||</div>
       <!-- 侧边栏菜单区域 -->
         <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened
-         :collapse=" isCollapse" :collapse-transition="false" router :default-active="activePath"> 
+         :collapse=" isCollapse" :collapse-transition="false" router :default-active="activePath">
           <!-- 一级菜单 -->
       <el-submenu :index="item.id + '' " v-for="item in menulist" :key="item.id">
         <template slot="title">
@@ -31,9 +31,9 @@
           <span>{{subItems.authName}}</span>
         </template>
           </el-menu-item>
-      
+
       </el-submenu>
-    
+
     </el-menu>
     </el-aside>
     <!-- 主体区域 -->
@@ -47,23 +47,23 @@
 
 <script>
 export default {
-  data(){
-    return{
-      //左侧菜单数据
+  data() {
+    return {
+      // 左侧菜单数据
       menulist: [],
-      iconsObj:{
+      iconsObj: {
         '125': 'iconfont icon-user',
-        '103':'iconfont icon-tijikongjian',
-        '101':'iconfont icon-shangpin',
-        '102':'iconfont icon-danju',
-        '145':'iconfont icon-baobiao'
+        '103': 'iconfont icon-tijikongjian',
+        '101': 'iconfont icon-shangpin',
+        '102': 'iconfont icon-danju',
+        '145': 'iconfont icon-baobiao'
       },
-      isCollapse:false,
-      //被激活的连接地址
-      activePath:''
+      isCollapse: false,
+      // 被激活的连接地址
+      activePath: ''
     }
   },
-  created(){
+  created() {
     this.getmenuList()
     this.activePath = window.sessionStorage.getItem('activePath')
   },
@@ -72,20 +72,20 @@ export default {
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
-    //获取所有菜单数据
-    async getmenuList(){
-        const{ data:res }=await this.$http.get('menus')
-        if(res.meta.status !==200) return this.$message.error(res.meta.msg)
-        this.menulist= res.data
-        console.log(res)
+    // 获取所有菜单数据
+    async getmenuList() {
+      const { data: res } = await this.$http.get('menus')
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.menulist = res.data
+      console.log(res)
     },
-    //点击按钮切换菜单 折叠与展开
-    toggleCollapse(){
-      this.isCollapse= !this.isCollapse;
+    // 点击按钮切换菜单 折叠与展开
+    toggleCollapse() {
+      this.isCollapse = !this.isCollapse
     },
-    //保存连接的激活状态
-    saveNavState(activePath){
-      window.sessionStorage.setItem('activePath',activePath);
+    // 保存连接的激活状态
+    saveNavState(activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
     }
   }
 }
@@ -116,7 +116,7 @@ export default {
   .el-menu{
     border-right: none;
   }
- 
+
 }
 .el-main{
   background-color: #eaedf1;

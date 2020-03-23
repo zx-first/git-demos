@@ -10,8 +10,10 @@ import Cate from './components/goods/Cate.vue'
 import params from './components/goods/params.vue'
 import goods from './components/goods/goods.vue'
 import Add from './components/goods/Add.vue'
+import Order from './components/order/Order.vue'
+import Reports from './components/Reports/Reports.vue'
 Vue.use(Router)
-    // 路由规则 
+    // 路由规则
 const router = new Router({
     routes: [
         { path: '/', redirect: '/login' },
@@ -28,7 +30,9 @@ const router = new Router({
                 { path: '/categories', component: Cate },
                 { path: '/params', component: params },
                 { path: '/goods', component: goods },
-                { path: '/goods/Add', component: Add }
+                { path: '/goods/Add', component: Add },
+                { path: '/orders', component: Order },
+                { path: '/reports', component: Reports }
 
             ]
         }

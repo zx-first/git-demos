@@ -110,161 +110,163 @@
 
 <script>
 export default {
-    data(){
-        return{
-            getrolesList: [],
-            //分配权限
-            setRightDialogVisible: false,
-            rightslist:[],
-            //树形控件的属性绑定对象
-           treeProps:{
-               label: 'authName',
-               children: 'children'
-           },
-           //默认勾选的节点 用递归函数 
-           defaulttreeid:[],
-           //当前即将分配权限的id
-           roleId:'',
-           //编辑对话框展现与隐藏
-           editDialogVisible: false,
-           //编辑对话框查询角色
-           editForm:{
+  data() {
+    return {
+      getrolesList: [],
+      // 分配权限
+      setRightDialogVisible: false,
+      rightslist: [],
+      // 树形控件的属性绑定对象
+      treeProps: {
+        label: 'authName',
+        children: 'children'
+      },
+      // 默认勾选的节点 用递归函数
+      defaulttreeid: [],
+      // 当前即将分配权限的id
+      roleId: '',
+      // 编辑对话框展现与隐藏
+      editDialogVisible: false,
+      // 编辑对话框查询角色
+      editForm: {
 
-           },
-           //编辑对话框验证角色信息
-           editFormRules:{
-               roleName:[
-                   {required: true, message:'请输入角色名称',trigger:'blur'},
-                   {min:2,max:10,message:'请输入2-10个字符串',triggeer:'blur'}
-               ],
-               roleDesc:[
-                   {required: true,message:'请输入角色描述',trigger:'blur'},
-                   {min:2,max:15,message:'请输入2-15个字符串',trigger:'blur'}
+      },
+      // 编辑对话框验证角色信息
+      editFormRules: {
+        roleName: [
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
+          { min: 2, max: 10, message: '请输入2-10个字符串', triggeer: 'blur' }
+        ],
+        roleDesc: [
+          { required: true, message: '请输入角色描述', trigger: 'blur' },
+          { min: 2, max: 15, message: '请输入2-15个字符串', trigger: 'blur' }
 
-               ]
-           },
-           //添加角色
-           addRoleForm:{
-               
-               roleName:'',
-               roleDesc:''
-           },
-           //验证添加角色
-           addRoleFormRules:{
-                roleName:[
-              {
-                  required: true,message:'请输入用户名',
-                  trigger:'blur'
-              },
-              { min:2,max:10,message:'请输入2-10个字符串',trigger:'blur'}
-          ],
-         roleDesc:[
-               {
-                  required: false,message:'请输入密码',
-                  trigger:'blur'
-              },
-              { min:2,max:15,message:'密码的长度2-15个字符串',trigger:'blur'}
-          ],
-           },
-           //控制显示添加角色
-           addRoleDialogVisible: false
-        }
+        ]
+      },
+      // 添加角色
+      addRoleForm: {
+
+        roleName: '',
+        roleDesc: ''
+      },
+      // 验证添加角色
+      addRoleFormRules: {
+        roleName: [
+          {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+          },
+          { min: 2, max: 10, message: '请输入2-10个字符串', trigger: 'blur' }
+        ],
+        roleDesc: [
+          {
+            required: false,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          { min: 2, max: 15, message: '密码的长度2-15个字符串', trigger: 'blur' }
+        ]
+      },
+      // 控制显示添加角色
+      addRoleDialogVisible: false
+    }
+  },
+  created() {
+    this.getrolesLista()
+  },
+  methods: {
+    async getrolesLista() {
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色数据列表失败')
+      }
+      this.getrolesList = res.data
+      console.log(this.getrolesList)
     },
-    created(){
-        this.getrolesLista();
+    async removeRightyId(role, rightId) {
+      // 删除弹出确认框 因为是异步所以要加关键字
+      const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('取消了删除')
+      }
+      // console.log("确认删除u") 根据2个id 传参数
+      const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除权限失败')
+      }
+      // 把服务器的数据 赋值给role.children属性
+      role.children = res.data
     },
-    methods:{
-    async getrolesLista(){
-            const {data:res}=await this.$http.get('roles')
-            if(res.meta.status !==200){
-                return this.$message.error('获取角色数据列表失败')
-            }
-            this.getrolesList=res.data
-            console.log(this.getrolesList)
-        },
-        async removeRightyId(role,rightId){
-            // 删除弹出确认框 因为是异步所以要加关键字
-          const confirmResult=await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).catch(err=>err)
-        if(confirmResult !=='confirm'){
-            return this.$message.info('取消了删除')
-        }
-        // console.log("确认删除u") 根据2个id 传参数
-        const {data:res}=await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
-        if(res.meta.status !==200){
-            return this.$message.error('删除权限失败')
-        }
-        // 把服务器的数据 赋值给role.children属性
-        role.children=res.data
-        },
-        //分配权限
-        async showallocation(role){
-            this.roleId=role.id
-            //获取所以权限的数据
-            const {data:res}=await this.$http.get('rights/tree')
-            if(res.meta.status !==200){
-                return this.$message.error('获取权限数据失败')
-            }
-            //获取数据给数组响应到网页
-            this.rightslist=res.data
-            console.log(this.rightslist)
-            //递归获取三级节点的id
-            this.getLeafKeys(role,this.defaulttreeid)
-            this.setRightDialogVisible=true
-        },
-        //递归函数 如果当前nod节点不包含 children属性 则是三级节点
-        getLeafKeys(node,arr){
-            if(!node.children){
-                return arr.push(node.id)
-            }
-            //如果是
-            node.children.forEach(item => 
-            this.getLeafKeys(item,arr) 
-            );
-        },
-        //当前节点关闭清除id
-        setRightDialogClose(){
-            this.defaulttreeid=[]
-        },
-        //角色权限分配 半节点 全节点数组拼接
-        async allotRights(){
-            const keys=[
-                ...this.$refs.treeRef.getCheckedKeys(),
-                ...this.$refs.treeRef.getHalfCheckedKeys()
-            ]
-            const idStr= keys.join(',')
-            const {data: res}= await this.$http.post(`roles/${this.roleId}/rights`,{rids: idStr})
-            if(res.meta.status !==200){
-                return this.$message.error('分配权限失败!')
-            }
-            this.$message.success('分配权限成功')
-        },
-        //编辑对话框的展示
-        async showEditRoles(id){
-          const {data:res} =await this.$http.get('roles/'+id)
-          if(res.meta.status !==200){
-              return this.$message.error('获取角色数据失败')
-          }
-          this.editForm=res.data
-            this.editDialogVisible =true
-        },
-        //关闭清空编辑对话框的内容
-        editRolecolse(){
-            this.$refs.editFormRef.resetFields()
-        },
-        //提交修改表单验证域名对话框
-        editConfirmDialogVisible(){
-          this.$refs.editFormRef.validate(async valid=>{
-                if(!valid) return
-                //发起修改用户信息请求
-                const { data: res } = await this.$http.put(
+    // 分配权限
+    async showallocation(role) {
+      this.roleId = role.id
+      // 获取所以权限的数据
+      const { data: res } = await this.$http.get('rights/tree')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取权限数据失败')
+      }
+      // 获取数据给数组响应到网页
+      this.rightslist = res.data
+      console.log(this.rightslist)
+      // 递归获取三级节点的id
+      this.getLeafKeys(role, this.defaulttreeid)
+      this.setRightDialogVisible = true
+    },
+    // 递归函数 如果当前nod节点不包含 children属性 则是三级节点
+    getLeafKeys(node, arr) {
+      if (!node.children) {
+        return arr.push(node.id)
+      }
+      // 如果是
+      node.children.forEach(item =>
+        this.getLeafKeys(item, arr)
+      )
+    },
+    // 当前节点关闭清除id
+    setRightDialogClose() {
+      this.defaulttreeid = []
+    },
+    // 角色权限分配 半节点 全节点数组拼接
+    async allotRights() {
+      const keys = [
+        ...this.$refs.treeRef.getCheckedKeys(),
+        ...this.$refs.treeRef.getHalfCheckedKeys()
+      ]
+      const idStr = keys.join(',')
+      const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, { rids: idStr })
+      if (res.meta.status !== 200) {
+        return this.$message.error('分配权限失败!')
+      }
+      this.$message.success('分配权限成功')
+    },
+    // 编辑对话框的展示
+    async showEditRoles(id) {
+      const { data: res } = await this.$http.get('roles/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色数据失败')
+      }
+      this.editForm = res.data
+      this.editDialogVisible = true
+    },
+    // 关闭清空编辑对话框的内容
+    editRolecolse() {
+      this.$refs.editFormRef.resetFields()
+    },
+    // 提交修改表单验证域名对话框
+    editConfirmDialogVisible() {
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return
+        // 发起修改用户信息请求
+        const { data: res } = await this.$http.put(
           'roles/' + this.editForm.roleId,
           {
-           roleName: this.editForm.roleName,
-           roleDesc: this.editForm.roleDesc
+            roleName: this.editForm.roleName,
+            roleDesc: this.editForm.roleDesc
           }
         )
 
@@ -278,54 +280,52 @@ export default {
         this.getrolesLista()
         // 提示修改成功
         this.$message.success('更新用户信息成功！')
-          })
-        
-        },
-        //删除角色列表  引入message Box 
-         async showDeleteRols(id){
-         const confirms=await this.$confirm('此操作将永久删除角色？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).catch(err=>{
-            return err
-        })
-        console.log(confirms)
-        if(confirms !=='confirm'){
-            return this.$message.info('已取消删除')
+      })
+    },
+    // 删除角色列表  引入message Box
+    async showDeleteRols(id) {
+      const confirms = await this.$confirm('此操作将永久删除角色？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).catch(err => {
+        return err
+      })
+      console.log(confirms)
+      if (confirms !== 'confirm') {
+        return this.$message.info('已取消删除')
+      }
+      const { data: res } = await this.$http.delete('roles/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除数据失败')
+      }
+      this.$message.success('删除角色成功')
+      this.getrolesLista()
+    },
+    // 添加角色功能
+    addRole() {
+      this.$refs.addRoleFormRef.validate(async valid => {
+        if (!valid) return
+        // 可以发起添加用户的网络请求
+        const { data: res } = await this.$http.post('roles', this.addRoleForm)
+        if (res.meta.status !== 201) {
+          this.$message.error('添加用户失败!')
         }
-            const {data:res}=await this.$http.delete('roles/'+id)
-            if(res.meta.status !==200){
-                return this.$message.error('删除数据失败')
-            }
-            this.$message.success('删除角色成功')
-            this.getrolesLista();
-        },
-        //添加角色功能
-           addRole(){
-            this.$refs.addRoleFormRef.validate(async valid =>{
-                if(!valid) return 
-                //可以发起添加用户的网络请求
-                const {data:res}= await this.$http.post('roles',this.addRoleForm)
-                if(res.meta.status !==201){
-                    this.$message.error('添加用户失败!')
-                }
-                this.$message.success('添加用户成功!')
-                console.log(res.data)
-                //隐藏添加用户的对话框
-                this.addRoleDialogVisible=false
-                //重新获取数据
-                this.getrolesLista();
-            })
-        }
+        this.$message.success('添加用户成功!')
+        console.log(res.data)
+        // 隐藏添加用户的对话框
+        this.addRoleDialogVisible = false
+        // 重新获取数据
+        this.getrolesLista()
+      })
     }
+  }
 }
 </script>
-
 
 <style lang="less" scoped>
 .el-tag{
     margin: 7px;
-    
+
 }
 .bdtop{
     border-top: 1px solid #eee;
